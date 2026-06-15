@@ -1,6 +1,7 @@
 import 'package:boom_signup/database/event_handler.dart';
 import 'package:boom_signup/database/firestore_services.dart';
 import 'package:boom_signup/models/event.dart';
+import 'package:boom_signup/themes.dart';
 import 'package:boom_signup/utils.dart';
 import 'package:boom_signup/widgets/delete_confirmation_popup.dart';
 import 'package:boom_signup/widgets/info_popup.dart';
@@ -69,59 +70,30 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        leading: Image.asset(
-          ("lib/assets/gac-icon.png"),
-          width: 24,
-          height: 24,
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: _renderPopupButton(),
-          ),
-        ],
-      ),
-
+      appBar: _renderAppBar(),
       body: Column(
         crossAxisAlignment: .stretch,
         children: [
-          Padding(
-            padding: EdgeInsets.only(bottom: 5),
-            child: Text(
-              "Boom Signup",
-              style: TextStyle(color: Colors.black, fontSize: 32),
-              textAlign: .center,
-            ),
-          ),
-          _isLoading
-              ? Container()
-              : hasNoEntries
-              ? Container(
-                  padding: EdgeInsets.only(top: 10, left: 10),
-                  child: Text("No entries yet!"),
-                )
-              : AlignedGridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 1,
-                  mainAxisSpacing: 12.0,
-                  crossAxisSpacing: 12.0,
-                  padding: const EdgeInsets.only(
-                    right: 16,
-                    bottom: 16,
-                    left: 16,
-                  ),
-                  itemCount: events.length,
-                  itemBuilder: (context, index) {
-                    return DateWidget(
-                      events[index],
-                      onEntryDelete: onEntryDelete,
-                    );
-                  },
-                ),
+          _renderLowerTitle(),
+          _renderBody()
         ],
       ),
+    );
+  }
+
+  AppBar _renderAppBar() {
+    return AppBar(
+      backgroundColor: AppColors.black,
+      leading: Padding(
+        padding: EdgeInsets.all(AppPadding.small),
+        child: Image.asset(("lib/assets/gac-icon.png"), width: 24, height: 24),
+      ),
+      actions: [
+        Padding(
+          padding: EdgeInsets.only(right: AppPadding.small),
+          child: _renderPopupButton(),
+        ),
+      ],
     );
   }
 
@@ -131,14 +103,65 @@ class _HomeScreenState extends State<HomeScreen> {
         _infoEntered(context);
       },
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(("lib/assets/add-icon.png"), width: 24, height: 24),
-          Padding(padding: EdgeInsets.only(right: 8)),
-          Text('Signup (Click Here)'),
-          Padding(padding: EdgeInsets.only(right: 8)),
-          Image.asset(("lib/assets/add-icon.png"), width: 24, height: 24),
+          Image.asset(("lib/assets/add-icon.png"), width: 16, height: 16),
+          SizedBox(width: AppPadding.normal,),
+          Text('Signup (Click Here)', style: AppTextStyles.appBarButton),
+          SizedBox(width: AppPadding.normal,),
+          Image.asset(("lib/assets/add-icon.png"), width: 16, height: 16),
         ],
       ),
+    );
+  }
+
+  Widget _renderBody() {
+    if (_isLoading) return SizedBox.shrink();
+    if (hasNoEntries) return _renderEmpty();
+    return _renderEventList();
+  }
+
+  Widget _renderLowerTitle() {
+    return Container(
+      color: AppColors.black,
+      padding: EdgeInsets.only(
+        left: AppPadding.normal,
+        right: AppPadding.normal,
+        bottom: AppPadding.normal,
+        top: AppPadding.extraSmall,
+      ),
+      child: Text(
+        "Boom Signup",
+        style: AppTextStyles.mainTitle.copyWith(color: AppColors.white),
+        textAlign: .center,
+      ),
+    );
+  }
+
+  Widget _renderEmpty() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: AppPadding.large,
+        left: AppPadding.normal,
+      ),
+      child: Text('No entries yet.', style: AppTextStyles.noEvents),
+    );
+  }
+
+  Widget _renderEventList() {
+    return AlignedGridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 1,
+      mainAxisSpacing: AppPadding.small,
+      crossAxisSpacing: AppPadding.small,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.normal,
+        vertical: AppPadding.normal,
+      ),
+      itemCount: events.length,
+      itemBuilder: (context, index) {
+        return DateWidget(events[index], onEntryDelete: onEntryDelete);
+      },
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:boom_signup/models/event.dart';
+import 'package:boom_signup/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -17,82 +18,130 @@ class _DateWidgetState extends State<DateWidget> {
   Widget build(BuildContext context) {
     return widget.event.entries != null && widget.event.entries!.isNotEmpty
         ? Container(
-            constraints: BoxConstraints(minHeight: 200),
-            decoration: BoxDecoration(
-              border: Border.all(),
-              color: Theme.of(context).colorScheme.surface,
-            ),
+            constraints: BoxConstraints(minHeight: 175),
+            decoration: TableDecorations.table,
             child: _renderBox(context),
           )
-        : Container();
+        : SizedBox.shrink();
   }
 
   Widget _renderBox(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 20, bottom: 8),
-          child: Text(
-            DateFormat("EEEE").format(widget.event.date),
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        ),
-        _renderTable(context),
-      ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [_renderDate(), _renderTable(context)],
+    );
+  }
+
+  Widget _renderDate() {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: AppPadding.normal,
+        left: AppPadding.normal,
+        right: AppPadding.normal,
+        bottom: AppPadding.small,
+      ),
+      child: Text(
+        DateFormat('EEEE, MMMM d').format(widget.event.date),
+        style: AppTextStyles.dateStyle,
+      ),
     );
   }
 
   Widget _renderTable(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(right: 8, left: 8, bottom: 8),
+      padding: EdgeInsets.only(
+        right: AppPadding.normal,
+        left: AppPadding.normal,
+        bottom: AppPadding.normal,
+      ),
       child: Table(
-        columnWidths: const <int, TableColumnWidth>{
-          0: FlexColumnWidth(1),
-          1: FlexColumnWidth(1.5), // Twice as wide
-        },
-
-        border: TableBorder.all(color: Colors.grey, width: 1),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: <TableRow>[
-          TableRow(
-            children: [
-              _titleCellFormat("Date"),
-              _titleCellFormat('Players and Times'),
-            ],
-          ),
-          TableRow(
-            children: [
-              TableCell(
-                child: Container(
-                  alignment: .center,
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(DateFormat.yMd().format(widget.event.date)),
-                ),
-              ),
-              TableCell(child: _renderAllPeople()),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _titleCellFormat(String text) {
-    return TableCell(
-      child: Container(
-        decoration: BoxDecoration(color: Colors.black),
-        padding: EdgeInsets.all(8.0),
-        alignment: .center,
-        child: Text(
-          text,
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber),
+        border: TableBorder.all(
+          color: AppColors.divider,
+          width: 1,
+          borderRadius: BorderRadius.circular(4),
         ),
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        children: <TableRow>[_renderTableHeader(), _renderAllPeople()],
       ),
     );
   }
 
-  Widget _renderAllPeople() {
+  TableRow _renderTableHeader() {
+    return TableRow(
+      decoration: TableDecorations.tableHeader,
+      children: [
+        Padding(
+          padding: AppPadding.tableCellPadding,
+          child: Text('PLAYERS & TIMES', style: AppTextStyles.tableHeader),
+        ),
+      ],
+    );
+  }
+
+  TableRow _renderAllPeople() {
+    return TableRow(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (int i = 0; i < widget.event.entryList.length; i++)
+              _renderPerson(widget.event.entryList[i], i),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _renderPerson(Entry entry, int index) {
+    final bool isLast = index == widget.event.entryList.length - 1;
+    return Container(
+      decoration: BoxDecoration(
+        border: isLast
+            ? null
+            : const Border(
+                bottom: BorderSide(color: AppColors.divider, width: 1),
+              ),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.small,
+        vertical: AppPadding.extraSmall,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [_renderEntryLabel(entry), _renderDeleteButton(entry)],
+      ),
+    );
+  }
+
+  Widget _renderEntryLabel(Entry entry) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 3,
+          height: 20,
+          margin: const EdgeInsets.only(right: AppPadding.small),
+          color: AppColors.gustieGold,
+        ),
+        Text(
+          '${entry.person}  ·  ${entry.preferredTime}',
+          style: AppTextStyles.personStyle,
+        ),
+      ],
+    );
+  }
+
+  Widget _renderDeleteButton(Entry entry) {
+    return IconButton(
+      onPressed: () => widget.onEntryDelete(widget.event, entry),
+      icon: Image.asset('lib/assets/x-icon.png', width: 16, height: 16),
+      padding: const EdgeInsets.all(AppPadding.extraSmall),
+      constraints: const BoxConstraints(),
+      splashRadius: 18,
+    );
+  }
+
+  /* Widget _renderAllPeople() {
     return Column(
       children: [
         for (Entry entry in widget.event.entryList) _renderPerson(entry),
@@ -100,7 +149,7 @@ class _DateWidgetState extends State<DateWidget> {
     );
   }
 
-  Widget _renderPerson(Entry entry) {
+  Widget _renderPerson(Entry entry, int index) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -116,5 +165,5 @@ class _DateWidgetState extends State<DateWidget> {
         ),
       ],
     );
-  }
+  } */
 }

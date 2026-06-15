@@ -1,4 +1,5 @@
 import 'package:boom_signup/database/event_handler.dart';
+import 'package:boom_signup/themes.dart';
 import 'package:boom_signup/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -56,9 +57,20 @@ class _SignupAlertDialogState extends State<SignupAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Sign Up'),
+      backgroundColor: AppColors.white,
+      title: _renderTitle(),
       content: _renderContent(),
       actions: [_renderCancelButton(), _renderSaveButton()],
+    );
+  }
+
+  Widget _renderTitle() {
+    return Row(
+      children: [
+        Container(width: 4, height: 22, color: AppColors.gustieGold),
+        SizedBox(width: AppPadding.small),
+        Text("Sign up", style: AppTextStyles.dateStyle),
+      ],
     );
   }
 
@@ -70,9 +82,9 @@ class _SignupAlertDialogState extends State<SignupAlertDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _renderNameBox(),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppPadding.small),
             _renderTimeBox(),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppPadding.small),
             _renderDayDropDown(),
           ],
         ),
@@ -83,6 +95,7 @@ class _SignupAlertDialogState extends State<SignupAlertDialog> {
   Widget _renderNameBox() {
     return TextFormField(
       controller: _nameController,
+      style: AppTextStyles.personStyle,
       decoration: const InputDecoration(
         labelText: 'Name',
         hintText: 'Enter your name',
@@ -99,6 +112,7 @@ class _SignupAlertDialogState extends State<SignupAlertDialog> {
   Widget _renderTimeBox() {
     return TextFormField(
       controller: _timeController,
+      style: AppTextStyles.personStyle,
       decoration: const InputDecoration(
         labelText: 'Time',
         hintText: 'Enter a time (e.g. 5:00 PM)',
@@ -117,6 +131,7 @@ class _SignupAlertDialogState extends State<SignupAlertDialog> {
       initialValue: widget.initialDay,
       hint: Text("Select a weekday"),
       decoration: const InputDecoration(labelText: 'Day'),
+      style: AppTextStyles.personStyle,
       items: Weekday.values
           .map(
             (day) =>
@@ -142,7 +157,13 @@ class _SignupAlertDialogState extends State<SignupAlertDialog> {
   Widget _renderCancelButton() {
     return TextButton(
       onPressed: () => Navigator.of(context).pop(),
-      child: const Text('Cancel'),
+      style: TextButton.styleFrom(foregroundColor: AppColors.textSecondary),
+      child: Text(
+        'Cancel',
+        style: AppTextStyles.appBarButton.copyWith(
+          color: AppColors.textSecondary,
+        ),
+      ),
     );
   }
 

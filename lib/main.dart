@@ -1,3 +1,4 @@
+import 'package:boom_signup/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:boom_signup/database/firebase_options.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Boom Signup',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.white)),
+      theme: AppTheme.theme,
       home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
