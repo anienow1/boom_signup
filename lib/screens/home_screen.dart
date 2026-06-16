@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: .stretch,
         children: [
           _renderLowerTitle(),
-          _renderBody()
+          Expanded(child: SingleChildScrollView(child: _renderBody())),
         ],
       ),
     );
@@ -106,9 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(("lib/assets/add-icon.png"), width: 16, height: 16),
-          SizedBox(width: AppPadding.normal,),
+          SizedBox(width: AppPadding.normal),
           Text('Signup (Click Here)', style: AppTextStyles.appBarButton),
-          SizedBox(width: AppPadding.normal,),
+          SizedBox(width: AppPadding.normal),
           Image.asset(("lib/assets/add-icon.png"), width: 16, height: 16),
         ],
       ),
@@ -118,7 +118,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _renderBody() {
     if (_isLoading) return SizedBox.shrink();
     if (hasNoEntries) return _renderEmpty();
-    return _renderEventList();
+    return Padding(
+      padding: EdgeInsets.only(top: AppPadding.normal),
+      child: _renderEventList(),
+    );
   }
 
   Widget _renderLowerTitle() {
@@ -144,24 +147,24 @@ class _HomeScreenState extends State<HomeScreen> {
         top: AppPadding.large,
         left: AppPadding.normal,
       ),
-      child: Text('No entries yet.', style: AppTextStyles.noEvents),
+      child: Text('Nobody signed up yet!', style: AppTextStyles.noEvents),
     );
   }
 
   Widget _renderEventList() {
-    return AlignedGridView.count(
-      shrinkWrap: true,
-      crossAxisCount: 1,
-      mainAxisSpacing: AppPadding.small,
-      crossAxisSpacing: AppPadding.small,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.normal,
-        vertical: AppPadding.normal,
-      ),
-      itemCount: events.length,
-      itemBuilder: (context, index) {
-        return DateWidget(events[index], onEntryDelete: onEntryDelete);
-      },
+    return Column(
+      children: events
+          .map(
+            (event) => Padding(
+              padding: EdgeInsets.only(
+                left: AppPadding.normal,
+                right: AppPadding.normal,
+                bottom: AppPadding.small,
+              ),
+              child: DateWidget(event, onEntryDelete: onEntryDelete),
+            ),
+          )
+          .toList(),
     );
   }
 

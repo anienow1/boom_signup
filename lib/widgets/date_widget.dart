@@ -108,7 +108,7 @@ class _DateWidgetState extends State<DateWidget> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_renderEntryLabel(entry), _renderDeleteButton(entry)],
+        children: [Expanded(child: _renderEntryLabel(entry)), _renderDeleteButton(entry)],
       ),
     );
   }
@@ -123,9 +123,11 @@ class _DateWidgetState extends State<DateWidget> {
           margin: const EdgeInsets.only(right: AppPadding.small),
           color: AppColors.gustieGold,
         ),
-        Text(
-          '${entry.person}  ·  ${entry.preferredTime}',
-          style: AppTextStyles.personStyle,
+        Flexible(
+          child: Text(
+            '${entry.person}  ·  ${entry.preferredTime}',
+            style: AppTextStyles.personStyle,
+          ),
         ),
       ],
     );
@@ -140,30 +142,4 @@ class _DateWidgetState extends State<DateWidget> {
       splashRadius: 18,
     );
   }
-
-  /* Widget _renderAllPeople() {
-    return Column(
-      children: [
-        for (Entry entry in widget.event.entryList) _renderPerson(entry),
-      ],
-    );
-  }
-
-  Widget _renderPerson(Entry entry, int index) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          "${entry.person} (${entry.preferredTime})",
-          style: TextStyle(color: Colors.black),
-        ),
-        IconButton(
-          onPressed: () {
-            widget.onEntryDelete(widget.event, entry);
-          },
-          icon: Image.asset(("lib/assets/x-icon.png"), width: 18, height: 18),
-        ),
-      ],
-    );
-  } */
 }

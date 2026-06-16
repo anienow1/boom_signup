@@ -115,7 +115,7 @@ class _SignupAlertDialogState extends State<SignupAlertDialog> {
       style: AppTextStyles.personStyle,
       decoration: const InputDecoration(
         labelText: 'Time',
-        hintText: 'Enter a time (e.g. 5:00 PM)',
+        hintText: 'Enter when you want to play.',
       ),
       validator: (value) {
         if (value == null || value.trim().isEmpty) {

@@ -84,6 +84,7 @@ class TableDecorations {
 
   static BoxDecoration get tableHeader => const BoxDecoration(
         color: AppColors.tableHeaderBackground,
+        borderRadius: BorderRadius.all(Radius.circular(4))
       );
 }
 
